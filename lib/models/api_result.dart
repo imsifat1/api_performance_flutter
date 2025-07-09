@@ -24,4 +24,21 @@ class ApiResult {
     duration.inMilliseconds.toString(),
     responseSize.toString(),
   ];
+
+  factory ApiResult.fromCsvRow(List<dynamic> row) {
+    String method = row[0].toString();
+    int statusCode = int.tryParse(row[1].toString()) ?? 0;
+    int durationMs = int.tryParse(row[2].toString()) ?? 0;
+    int responseSize = int.tryParse(row[3].toString()) ?? 0;
+
+    return ApiResult(
+      method: method,
+      statusCode: statusCode,
+      duration: Duration(milliseconds: durationMs),
+      responseSize: responseSize,
+      body: '',
+    );
+  }
+
+
 }
