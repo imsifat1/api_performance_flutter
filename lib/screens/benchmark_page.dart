@@ -18,6 +18,7 @@ class BenchmarkPage extends ConsumerWidget {
       appBar: AppBar(title: const Text("API Benchmark")),
       body: Center(
         child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             ElevatedButton(
               onPressed: () async {
