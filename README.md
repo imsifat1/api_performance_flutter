@@ -2,11 +2,7 @@
 
 A Flutter-based benchmarking tool that evaluates the performance of popular HTTP clients—**http**, **dio**, and **retrofit**—across multiple API test cases. This tool helps measure and compare **response time**, **payload size**, and **error handling efficiency** under controlled conditions.
 
-![Dashboard Screenshot](assets/screenshot_dashboard.png)
-![Benchmark Result Screenshot](assets/screenshot_benchmark_result.png)
-![Benchmark Chart Screenshot](assets/screenshot_chart.png)
-![CSV Table Screenshot](assets/screenshot_table.png)
-
+<img src="assets/screenshot_dashboard.png" height="500em" />&nbsp;<img src="screenshot_benchmark_result.png" height="500em" />&nbsp;<img src="screenshot_chart.png" height="500em" />&nbsp;<img src="screenshot_table.png" height="500em" />
 ---
 
 ## ✨ Features
@@ -69,10 +65,10 @@ flutter pub get
 flutter run
 ```
 
-### 🧠 Research Insight
+## 🧠 Research Insight
 > This benchmarking tool is part of a research initiative to evaluate Flutter's client-side API handling efficiency. It reveals how each package performs under real-world scenarios, offering useful insights for developers choosing the right HTTP client.
 
-### 🗃️ Tech Stack
+## 🗃️ Tech Stack
 - Flutter
 
 * Dio
@@ -83,7 +79,7 @@ flutter run
 
 + path_provider & csv for local CSV storage
 
-### 📂 Folder Structure
+## 📂 Folder Structure
 
 ```bash
 lib/
@@ -94,10 +90,10 @@ lib/
 ├── constants.dart   # Endpoint definitions
 ```
 
-### 📄 License
+## 📄 License
 MIT License. You are free to use, modify, and distribute this project with attribution.
 
-### 🙋‍♂️ Author
+## 🙋‍♂️ Author
 **Imran Sifat**
 Passionate about Flutter and software performance engineering.
 
