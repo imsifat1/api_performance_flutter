@@ -73,20 +73,64 @@ class BenchmarkPage extends ConsumerWidget {
                     }
                   }
 
+
+
                   Navigator.pop(context); // close loading
+
+                  // Group results by test label (e.g., "Small Product", "Large Product List")
+                  final grouped = <String, List<ApiResult>>{};
+                  for (var r in allResults) {
+                    final label = r.method.split('(').last.replaceAll(')', '').trim(); // extract label
+                    grouped.putIfAbsent(label, () => []).add(r);
+                  }
 
                   showDialog(
                     context: context,
                     builder: (_) => AlertDialog(
                       title: const Text("Benchmark Results"),
+                      contentPadding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                       content: SizedBox(
                         width: double.maxFinite,
-                        child: ListView(
-                          children: allResults.map((r) => Text(r.toString())).toList(),
+                        height: MediaQuery.of(context).size.height * 0.6,
+                        child: Scrollbar(
+                          thumbVisibility: true,
+                          child: ListView(
+                            children: grouped.entries.map((entry) {
+                              final label = entry.key;
+                              final results = entry.value;
+
+                              return Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(' ⚡ $label', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                                    const SizedBox(height: 6),
+                                    ...results.map((r) => Padding(
+                                      padding: const EdgeInsets.only(bottom: 4),
+                                      child: Text(
+                                        '${r.method.split(" ").first}: ${r.duration.inMilliseconds} ms (${r.responseSize} B)',
+                                        style: TextStyle(color: Colors.grey[700]),
+                                      ),
+                                    )),
+                                    const Divider(),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
                         ),
                       ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text("Close"),
+                        ),
+                      ],
                     ),
                   );
+
+
                 } catch (e) {
                   Navigator.pop(context); // close loading
                   log('Benchmark failed: $e');
