@@ -22,7 +22,7 @@ class _RestClient implements RestClient {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<HttpResponse<String>> getProducts() async {
+  Future<HttpResponse<String>> getAny(String endpoint) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};

@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../constants/endpoints.dart';
 import '../models/api_result.dart';
 import '../providers/api_provider.dart';
 import '../utils/csv_logger.dart';
@@ -45,30 +48,54 @@ class BenchmarkPage extends ConsumerWidget {
                 final dio = ref.read(dioProvider);
                 final retrofit = ref.read(retrofitServiceProvider);
 
-                final results = await Future.wait([
-                  http.fetch("/products"),
-                  dio.fetch("/products"),
-                  retrofit.fetch(),
-                ]);
-
-                for (var result in results) {
-                  await CsvLogger.logResult(result);
-                  await writeResultToCsv(result);
-                  debugPrint(result.toString());
-                }
-
                 showDialog(
                   context: context,
-                  builder: (_) => AlertDialog(
-                    title: const Text("Benchmark Results"),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: results.map((r) => Text(r.toString())).toList(),
-                    ),
-                  ),
+                  barrierDismissible: false,
+                  builder: (_) => const Center(child: CircularProgressIndicator()),
                 );
+
+                List<ApiResult> allResults = [];
+
+                try {
+                  for (final test in testCases) {
+                    final results = await Future.wait([
+                      http.fetch(test.endpoint),
+                      dio.fetch(test.endpoint),
+                      retrofit.fetch(test.endpoint),
+                    ]);
+
+                    for (var r in results) {
+                      final labeledResult = r.copyWith(method: r.method + ' (${test.label})');
+                      await CsvLogger.logResult(labeledResult);
+                      writeResultToCsv(labeledResult);
+                      debugPrint(labeledResult.toString());
+                      allResults.add(labeledResult);
+                    }
+                  }
+
+                  Navigator.pop(context); // close loading
+
+                  showDialog(
+                    context: context,
+                    builder: (_) => AlertDialog(
+                      title: const Text("Benchmark Results"),
+                      content: SizedBox(
+                        width: double.maxFinite,
+                        child: ListView(
+                          children: allResults.map((r) => Text(r.toString())).toList(),
+                        ),
+                      ),
+                    ),
+                  );
+                } catch (e) {
+                  Navigator.pop(context); // close loading
+                  log('Benchmark failed: $e');
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Benchmark failed: $e')),
+                  );
+                }
               },
+
             ),
             const SizedBox(height: 24),
             Row(

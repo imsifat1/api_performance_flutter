@@ -40,5 +40,20 @@ class ApiResult {
     );
   }
 
+  ApiResult copyWith({
+    String? method,
+    int? statusCode,
+    Duration? duration,
+    int? responseSize,
+  }) {
+    return ApiResult(
+      method: method ?? this.method,
+      statusCode: statusCode ?? this.statusCode,
+      duration: duration ?? this.duration,
+      responseSize: responseSize ?? this.responseSize,
+      body: '',
+    );
+  }
+
 
 }

@@ -8,5 +8,5 @@ abstract class RestClient {
   factory RestClient(Dio dio, {String baseUrl}) = _RestClient;
 
   @GET("/products")
-  Future<HttpResponse<String>> getProducts(); // Raw response
+  Future<HttpResponse<String>> getAny(String endpoint); // Raw response
 }

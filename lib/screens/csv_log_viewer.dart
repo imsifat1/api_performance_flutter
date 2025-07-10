@@ -77,29 +77,69 @@ class _CsvLogViewerState extends State<CsvLogViewer> {
             }
           }
 
-          final averageRows = methodDurations.entries.map((entry) {
+          final averageWidgets = methodDurations.entries.map((entry) {
             final method = entry.key;
             final durations = entry.value;
             final avg = durations.isEmpty
                 ? 0
                 : (durations.reduce((a, b) => a + b) / durations.length).round();
-            return '$method: $avg ms';
-          }).join('    •    ');
+            final methodColor = {
+              'http': Colors.blue,
+              'dio': Colors.green,
+              'retrofit': Colors.orange,
+            }[method] ?? Colors.grey;
 
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(12),
-                child: Text(
-                  'Average Durations →  $averageRows',
-                  style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.start,
-                ),
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 8),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 6,
+                    backgroundColor: methodColor,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    method.toUpperCase(),
+                    style: const TextStyle(fontWeight: FontWeight.w600),
+                  ),
+                  const Spacer(),
+                  Text('$avg ms', style: const TextStyle(color: Colors.black87)),
+                ],
               ),
-              const Divider(),
-              Expanded(
-                child: ListView.builder(
+            );
+          }).toList();
+
+
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Card(
+                    elevation: 2,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            '📊 Average Duration per Method',
+                            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                          ),
+                          const SizedBox(height: 8),
+                          ...averageWidgets,
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
+                const Divider(),
+                ListView.builder(
+                  physics: NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
                   itemCount: groups.length,
                   itemBuilder: (context, index) {
                     final group = groups[index];
@@ -157,8 +197,8 @@ class _CsvLogViewerState extends State<CsvLogViewer> {
                     );
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
