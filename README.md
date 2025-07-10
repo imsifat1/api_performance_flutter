@@ -2,7 +2,7 @@
 
 A Flutter-based benchmarking tool that evaluates the performance of popular HTTP clients—**http**, **dio**, and **retrofit**—across multiple API test cases. This tool helps measure and compare **response time**, **payload size**, and **error handling efficiency** under controlled conditions.
 
-<img src="assets/screenshot_dashboard.png" height="500em" />&nbsp;<img src="screenshot_benchmark_result.png" height="500em" />&nbsp;<img src="screenshot_chart.png" height="500em" />&nbsp;<img src="screenshot_table.png" height="500em" />
+<img src="assets/screenshot_dashboard.png" height="500em" />&nbsp;<img src="assets/screenshot_benchmark_result.png" height="500em" />&nbsp;<img src="assets/screenshot_chart.png" height="500em" />&nbsp;<img src="assets/screenshot_table.png" height="500em" />
 ---
 
 ## ✨ Features
