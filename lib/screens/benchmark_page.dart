@@ -1,7 +1,5 @@
-import 'package:api_performance_flutter/screens/benchmark_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../models/api_result.dart';
 import '../providers/api_provider.dart';
 import '../utils/csv_logger.dart';
@@ -15,12 +13,33 @@ class BenchmarkPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text("API Benchmark")),
-      body: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      appBar: AppBar(
+        title: const Text("API Benchmark Dashboard"),
+        centerTitle: true,
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            ElevatedButton(
+            const Text(
+              "Compare Performance of HTTP, Dio, and Retrofit",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 8),
+            const Text(
+              "This benchmark measures API response time and size across different methods.\nRun the benchmark to log and visualize results.",
+              textAlign: TextAlign.center,
+              style: TextStyle(color: Colors.grey),
+            ),
+            const SizedBox(height: 32),
+            ElevatedButton.icon(
+              icon: const Icon(Icons.bolt),
+              label: const Text("Run Benchmark"),
+              style: ElevatedButton.styleFrom(
+                padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                textStyle: const TextStyle(fontSize: 16),
+              ),
               onPressed: () async {
                 final http = ref.read(httpProvider);
                 final dio = ref.read(dioProvider);
@@ -34,7 +53,7 @@ class BenchmarkPage extends ConsumerWidget {
 
                 for (var result in results) {
                   await CsvLogger.logResult(result);
-                  writeResultToCsv(result);
+                  await writeResultToCsv(result);
                   debugPrint(result.toString());
                 }
 
@@ -50,26 +69,57 @@ class BenchmarkPage extends ConsumerWidget {
                   ),
                 );
               },
-              child: const Text("Run Benchmark"),
             ),
-
-            IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const CsvLogViewer()));
-              },
-              icon: Icon(Icons.data_thresholding_outlined),
-              tooltip: 'View CSV Logs',
-            ),
-
-            IconButton(
-              onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const CsvChartScreen()));
-              },
-              icon: Icon(Icons.pie_chart_rounded),
-              tooltip: 'View Benchmark Chart',
-            ),
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _BenchmarkButton(
+                  icon: Icons.table_chart,
+                  label: "View CSV Logs",
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CsvLogViewer()));
+                  },
+                ),
+                const SizedBox(width: 16),
+                _BenchmarkButton(
+                  icon: Icons.show_chart,
+                  label: "View Chart",
+                  onTap: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CsvChartScreen()));
+                  },
+                ),
+              ],
+            )
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _BenchmarkButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+
+  const _BenchmarkButton({
+    required this.icon,
+    required this.label,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton.icon(
+      onPressed: onTap,
+      icon: Icon(icon),
+      label: Text(label),
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        backgroundColor: Colors.grey.shade800,
+        foregroundColor: Colors.white,
+        textStyle: const TextStyle(fontSize: 14),
       ),
     );
   }
